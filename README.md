@@ -7,3 +7,5 @@ For samples :
     60% training
     20% testing
     20% cross-validation
+
+Referenced papers and code can be found in the references_papers folder
