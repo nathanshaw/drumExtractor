@@ -9,3 +9,12 @@ For samples :
     20% cross-validation
 
 Referenced papers and code can be found in the references_papers folder
+
+To Do :
+
+better onset detection code
+more features :
+	now all in features.py with raise notimplementederror 
+way to export 'samples' as files
+code to run training and testing
+

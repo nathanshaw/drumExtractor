@@ -112,8 +112,8 @@ def overSample(x):
 #not tested yet
 def underSample(x, ratio=2):
     under = np.zeros(len(x)//ratio)
-    for i in range(0,len(under)):
-        under[i] = (x[i*ratio:i*ratio+ratio])/ratio
+    for i in range(len(under)-1):
+        under[i] = (x[i*ratio])
     return under
 
 #this function needs some work
