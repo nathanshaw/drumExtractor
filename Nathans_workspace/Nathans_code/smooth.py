@@ -35,7 +35,7 @@ def lpf(x, sens):
             x[i] = (x[i-s] + x[i])/2
     return x
 
-def normalize(x):
+def normalized(x):
     """
     -------------------
     Normalizing Filter for scaling data in incomming array so the max value is equal to 1

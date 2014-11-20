@@ -127,17 +127,21 @@ def localMax(x, srate=None):
     for i in range(1,len(x)-1):
         cond1 = x[i] > x[i-1]
         cond2 = x[i] > x[i+1]
-        cond3 = x[i] > 0.16
+        cond3 = x[i] > 0.46#tweak this for the threshold for quietest sample
         if (cond1 * cond2 * cond3 == True):
             peaks[i] = 1
     counter = 0
+    onsetCounter = 0
     for i in range(0,len(peaks)):
         if (peaks[i] > 0):
             if (srate/counter < 4000):#gets rid of freqs we dont expect
                 print("Projected Frequency :",srate/counter)
                 counter = 0
+                onsetCounter = onsetCounter + 1
         else:
             counter = counter + 1
-
+    print('------------------')
+    print(onsetCounter, ' Onsets detected in ', len(x)/srate, ' second clip')
+    print('------------------')
     return peaks
 
