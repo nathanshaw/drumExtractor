@@ -1,6 +1,7 @@
 #functions for extracting features from audio signals
 from scipy import *
 import numpy as np
+from rect import halfWave
 
 def hfc(x):
     raise NotImplementedError()

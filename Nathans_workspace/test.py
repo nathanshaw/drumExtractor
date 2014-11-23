@@ -6,14 +6,12 @@ prototyping file for Dexter and Nathans machine learning final project
 """
 from pyConvert import convert
 from stft import *
-from plotter import *
 from rect import *
 import matplotlib.pyplot as plt
 from onset import *
 from smooth import *
 from pitchDetect import *
 import numpy as np
-from beatTrackers import *
 from mfcc import *
 from supervised import *
 from scipy.io import wavfile
