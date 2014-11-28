@@ -12,6 +12,11 @@ Fall 2014
 """
 import scipy.io.wavfile as wav
 import numpy as np
+
+def exportWave(name, srate, data):
+    wav.write(name,srate,data)
+    return 0
+
 def convert(fname, mode = None):
     """Takes in a wave file, scales it from -1.0 to 1.0
         Converts to mono if not mono

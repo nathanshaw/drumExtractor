@@ -4,6 +4,7 @@ test.py
 prototyping file for Dexter and Nathans machine learning final project
 ---------
 """
+from wave import *
 from pyConvert import convert
 from stft import *
 from rect import *
@@ -90,6 +91,56 @@ plt.title('After pre-Processing :')
 """
 returns np.array with onset labels
 """
+
+def exportSamples(samples, label=None):
+    """
+    Function for Exporting Arrays of Audio data as labeled .wav files
+    -----------------
+    Variables
+    -----------------
+    samples = incomming array of audio data
+    label   = incomming array with labels for incomming audio data
+            The function assumes the following :
+                0 = data is not percussive, function discards the sample
+                1 = data is percussive but of unknown catagory
+                2 = data is catagorized as a Kick Drum
+                3 = data is catagorized as a Snare
+                4 = data is catagorized as a Clap
+    -----------------
+    Returns :
+    -----------------
+
+    -----------------
+    """
+    if (label == None):
+        print("No label data given, will export all samples with unknown type")
+        for i in range(len(samples)):
+            sampleName = nameFile(1) + str(i)
+            #export samples[i]
+        return 0
+
+    for i in range(len(samples)):
+        sampleName = nameFile(label[i])
+        createWave(samples[i])
+    return 0
+
+def createWave(sample):
+    Wave_write.writeframes(sample)
+
+
+def nameFile(label):
+    if (label == 0):
+        fileName = 'tonal'
+    if (label == 1):
+        fileName = 'unknown'
+    if (label == 2):
+        fileName = 'Kick'
+    if (label == 3):
+        fileName = 'Snare'
+    if (label == 4):
+        fileName = 'Clap'
+    return fileName
+
 onsets = np.zeros(len(data))
 onsets = localMax(data, srate)
 samples = extractSamples(data, srate, onsets)
