@@ -95,25 +95,21 @@ onsets = localMax(data, srate)
 samples = extractSamples(data, srate, onsets)
 print("Number of Samples :", len(samples))
 print("Length of Sample 5 :", len(samples[4]))
-
 #feature extraction of onset-onset
-"""
-STFT = >
-HFC
-spectral kurtosis
-RMS (1 band)
-RMS (3band)
-RMS (3band vs 1 band)
-zero crossing rate
-Temp
-Centroid
-Spectral Centroid
-
-"""
+RMS = RMS(data)
+print("RMS 1-Banf : ", RMS)
+lowRMS, midRMS, highRMS = threeBandRMS(data)
+#HFC
+#spectral kurtosis
+#RMS (3band vs 1 band)
+#zero crossing rate
+#Temp
+#Centroid
+#Spectral Centroid
 f_spectFlux = spectralFlux(data)
+print("Spectral Flux : ", f_spectFlux)
 #features and labels are pumped into SVM learning algorithm for classification
 """
-
 """
 #export classified data as clips
 

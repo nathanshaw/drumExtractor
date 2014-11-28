@@ -61,7 +61,5 @@ def stft(x, N=None, hop=None, win=None):
 
     return X
 
-
-
-
-
+def myFFT(x):
+    return fft(x)

@@ -2,15 +2,26 @@
 from scipy import *
 import numpy as np
 from rect import halfWave
+from stft import myFFT
 
 def hfc(x):
     raise NotImplementedError()
 
 def RMS(x):
-    raise NotImplementedError()
+    total = 0
+    for i in range(len(x) - 1):
+        total = x[i] + total
+    return (total/len(x))**(0.5)
 
 def threeBandRMS(x):
-    raise NotImplementedError()
+    X = myFFT(x)
+    low = RMS(X[:len(X)//3])
+    mid = RMS(X[len(X)//3:(len(X)//3)*2])
+    high = RMS(X[(len(X)//3)*2:])
+    print("Low RMS : ", low)
+    print("Mid RMS : ", mid)
+    print("High RMS : ", high)
+    return low, mid, high
 
 def crestFactor(x):
     raise NotImplementedError()
