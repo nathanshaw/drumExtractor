@@ -4,6 +4,8 @@ test.py
 prototyping file for Dexter and Nathans machine learning final project
 ---------
 """
+
+from struct import pack
 from wave import *
 from pyConvert import convert
 from stft import *
@@ -17,6 +19,7 @@ from mfcc import *
 from supervised import *
 from scipy.io import wavfile
 from features import *
+
 """
 ----------------------------------
 Proto-functions
@@ -65,8 +68,6 @@ def extractSamples(data, srate, onsets):
 Test Code for Program
 --------------------------------
 """
-
-
 #read the file and get the mono data and sample rate returned
 data, srate = convert('clips/Rainspiration.wav', 1)
 #plot it
@@ -86,12 +87,18 @@ data = normalized(data)
 plt.subplot(212)
 plt.plot(data)
 plt.title('After pre-Processing :')
-#plt.show()
+plt.show()
 #onset detection
-"""
-returns np.array with onset labels
-"""
 
+################
+#counters for file names
+################
+unknownCount = 0
+tonalCount = 0
+kickCount = 0
+snareCount = 0
+clapCount = 0
+################
 def exportSamples(samples, label=None):
     """
     Function for Exporting Arrays of Audio data as labeled .wav files
@@ -121,25 +128,39 @@ def exportSamples(samples, label=None):
 
     for i in range(len(samples)):
         sampleName = nameFile(label[i])
-        createWave(samples[i])
+        createWave(samples[i], sampleName)
     return 0
 
-def createWave(sample):
-    Wave_write.writeframes(sample)
-
+def createWave(sample, fileName, srate):
+    wavFile = wave.open(fileName, 'w')
+    wavFile.setParams((1, 2, srate, 0, 'NONE', 'not compressed'))
+    maxVol = 2**15-1.0
+    wavFileData = ""
+    for i in range(len(sample)):
+        wavFileData += pack(sample[i])
+    wavFile.writeframes(wavFileData)
+    wavFile.writeframes(sample)
+    wavFile.close()
 
 def nameFile(label):
     if (label == 0):
-        fileName = 'tonal'
+        fileName = 'tonal' + str(tonalCount)
+        tonalCount += 1
     if (label == 1):
-        fileName = 'unknown'
+        fileName = 'unknown' + str(unknownCount)
+        unknownCount += 1
     if (label == 2):
-        fileName = 'Kick'
+        fileName = 'Kick' + str(kickCount)
+        kickCount += 1
     if (label == 3):
-        fileName = 'Snare'
+        fileName = 'Snare' + str(snareCount)
+        snareCount += 1
     if (label == 4):
-        fileName = 'Clap'
+        fileName = 'Clap' + str(clapCount)
+
     return fileName
+
+
 
 onsets = np.zeros(len(data))
 onsets = localMax(data, srate)
@@ -161,29 +182,10 @@ f_spectFlux = spectralFlux(data)
 print("Spectral Flux : ", f_spectFlux)
 #features and labels are pumped into SVM learning algorithm for classification
 """
+
 """
 #export classified data as clips
+exportSamples(samples, srate)
+"""
 
 
-#imshow(mfcc(stft(data),srate, 2048))
-#def imshow(X):
-#    plt.imshow(X, aspect='auto',origin='lower',interpolation='nearest')
-#timePlt(binaryClip(data/2),32.8,33)
-#timePlt(data,1,1.5)
-#timePlt(highPass(data,16000),1.1.5)
-#timePlt(highPass(data,8000),1.1.5)
-#timePlt(highPass(data,4000),1.1.5)
-#timePlt(energy(data),0,1)
-#timePlt(autoCorr(data))
-#print(fftFreq(data, srate))
-#fftExtraction1(data,srate)
-#timePlt(zeroCrossingRate(dcata), 0, 0.1)
-#timePlt(spectralFlux(data, 82),0, 5)
-#dataRect = fullWave(data)
-#timePlt(dataRect)
-#timePlt(data)
-#fftPlt(stft(data))
-#pPlt(localMax(data, srate),1, 5,15,0,0.5, srate)
-#pPlt(envelope(data, 2205),1, 5,15,0,0.5, srate)
-#timePlt(envelope(dataRect), 0,20,0,10)
-#timePlt(localMax(data), 0,80,0,1.2)
