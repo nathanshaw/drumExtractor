@@ -204,8 +204,9 @@ Machine Learning Section :
 #next we send this to the SVM function inside the supervised.py file
 #tweak the variable and we should hopfully have the machine learning finished
 """
-Exporting Section :
+Exporting Sectio
 """
+#changes
 #The labels returned from the SVM function will be used to label the samples
 #The program then exports all percussive clips
 # kick01.wav, kick02.wav etc.
