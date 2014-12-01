@@ -149,7 +149,7 @@ plt.title('Converted, pre')
 """
 remove DC onset, energy,  normalize, half-wave rect
 """
-data = data[35*srate:35.8*srate]#take seconds 35-35.8 seconds from the piece to use from here on out
+data = data[35*srate:35.8*srate]#take seconds 35-35.8 from the piece to use from here on out
 data = removeDC(data)
 data = halfWave(data)
 data = energy(data)
@@ -159,7 +159,9 @@ plt.subplot(212)
 plt.plot(data)
 plt.title('After pre-Processing :')
 plt.show()
-#onset detection
+
+#The only work that needs to be done for the preprocessing is adding the option for down sampling
+#we dont really need it but it might make things work better down the line
 
 """
 Onset Detection Section :
@@ -170,7 +172,10 @@ onsets = localMax(data, srate)
 samples = extractSamples(data, srate, onsets)
 print("Number of Samples :", len(samples))
 print("Length of Sample 5 :", len(samples[4]))
-#feature extraction of onset-onset
+
+#The onset detection code is quite wonky
+#this is the weakest part of the code that is written so far
+#we need to implement a more effective system for onset detection besides local max
 
 """
 Feature Extraction Section :
@@ -181,10 +186,10 @@ print("RMS 1-Banf : ", RMS)
 lowRMS, midRMS, highRMS = threeBandRMS(data)
 f_spectFlux = spectralFlux(data)
 print("Spectral Flux : ", f_spectFlux)
-#spectral kurtosis
-#HFC
-#RMS (3band vs 1 band)
-#zero crossing rate
+#spectral kurtosis -
+#HFC - high frequency content, can be extracted bluntly by using highpass filtersbefore RMS, or can be implimented in the frequency domain using fft
+#RMS (3band vs 1 band) - not sure if we need this...
+#zero crossing rate - just need to modify existing function
 #Temp
 #Centroid
 #Spectral Centroid
@@ -194,9 +199,15 @@ print("Spectral Flux : ", f_spectFlux)
 """
 Machine Learning Section :
 """
-
+#need to create np array with n dimentions where n is the number of features + 1
+#the first dimention of the array should contain the raw audio data, all the other dimentions are the different features we have
+#next we send this to the SVM function inside the supervised.py file
+#tweak the variable and we should hopfully have the machine learning finished
 """
 Exporting Section :
 """
-#export classified data as clips
-#exportSamples(samples)
+#The labels returned from the SVM function will be used to label the samples
+#The program then exports all percussive clips
+# kick01.wav, kick02.wav etc.
+#if the sample is of unknown percussive type it is exported as unknown01.wav, unknown02.wav etc.
+#lastly the program tells you how many of each type it exported and how many samples it threw away
