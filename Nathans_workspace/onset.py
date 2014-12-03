@@ -59,19 +59,26 @@ def complexNovelty(x):
     """
     raise NotImplementedError()
 
-def zeroCrossingRate(x, srate = 44100):
+def xCrossingCount(x):
     crossingCount = 0
+    for i in range (1, len(x)):
+        if ((x[i] > 0) & (x[i-1] <= 0)):
+                crossingCount = crossingCount + 1
+        if ((x[i] < 0) & (x[i-1] > 0)):
+                crossingCount = crossingCount + 1
+    #print(crossingCount*len(x)/srate/2)
+    return  crossingCount
 
+
+def zeroCrossingRate(x, srate = 44100):
     crossings = np.zeros(len(x))
     for i in range (1, len(x)):
         if ((x[i] > 0) & (x[i-1] <= 0)):
                 crossings[i] = 1
-                crossingCount = crossingCount + 1
         if ((x[i] < 0) & (x[i-1] > 0)):
                 crossings[i] = 1
-                crossingCount = crossingCount + 1
 
-    print(crossingCount*len(x)/srate/2)
+    #print(crossingCount*len(x)/srate/2)
     return crossings
 
 def envelope(x, binSize=None):
@@ -130,6 +137,7 @@ def localMax(x, srate=None):
         cond3 = x[i] > 0.46#tweak this for the threshold for quietest sample
         if (cond1 * cond2 * cond3 == True):
             peaks[i] = 1
+    """
     counter = 0
     onsetCounter = 0
     for i in range(0,len(peaks)):
@@ -143,5 +151,6 @@ def localMax(x, srate=None):
     print('------------------')
     print(onsetCounter, ' Onsets detected in ', len(x)/srate, ' second clip')
     print('------------------')
+    """
     return peaks
 

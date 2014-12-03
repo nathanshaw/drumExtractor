@@ -141,10 +141,12 @@ Test Code for Program
 """
 #read the file and get the mono data and sample rate returned
 data, srate = convert('clips/Rainspiration.wav', 1)
+"""
 #plot it
 plt.subplot(211)
 plt.plot(data)
 plt.title('Converted, pre')
+"""
 #preprocessing
 """
 remove DC onset, energy,  normalize, half-wave rect
@@ -154,12 +156,13 @@ data = removeDC(data)
 data = halfWave(data)
 data = energy(data)
 data = normalized(data)
+"""
 #lets plot this shit
 plt.subplot(212)
 plt.plot(data)
 plt.title('After pre-Processing :')
 plt.show()
-
+"""
 #The only work that needs to be done for the preprocessing is adding the option for down sampling
 #we dont really need it but it might make things work better down the line
 
@@ -180,18 +183,27 @@ print("Length of Sample 5 :", len(samples[4]))
 """
 Feature Extraction Section :
 """
+#note that ZCR is taken during onset section of
+f_ZCR = np.zeros(len(samples))
+f_RMS = np.zeros(len(samples))
+f_lowRMS = np.zeros(len(samples))
+f_midRMS = np.zeros(len(samples))
+f_highRMS = np.zeros(len(samples))
+f_spectralFlux = np.zeros(len(samples))
+print("_____________________________")
+print("Entering Feature Extraction Section")
+for i in range (len(samples)):
 
-RMS = RMS(data)
-print("RMS 1-Banf : ", RMS)
-lowRMS, midRMS, highRMS = threeBandRMS(data)
-f_spectFlux = spectralFlux(data)
-print("Spectral Flux : ", f_spectFlux)
+    f_ZCR[i] = xCrossingCount(samples[i])
+    f_RMS[i] = RMS(samples[i])
+    #print("RMS 1-Banf : ", RMS[i])
+    f_lowRMS[i], f_midRMS[i], f_highRMS[i] = threeBandRMS(samples[i])
+    #f_spectralFlux[i] = spectralFlux(samples[i])
+    #print("Spectral Flux : ", spectralflux[i])
 #spectral kurtosis -
 #HFC - high frequency content, can be extracted bluntly by using highpass filtersbefore RMS, or can be implimented in the frequency domain using fft
-#RMS (3band vs 1 band) - not sure if we need this...
-#zero crossing rate - just need to modify existing function
-#Temp
-#Centroid
+#RMS (3band vs 1 band) - not sure if we need this..
+#Temp Centroid
 #Spectral Centroid
 
 #features and labels are pumped into SVM learning algorithm for classification
