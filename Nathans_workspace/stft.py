@@ -61,5 +61,39 @@ def stft(x, N=None, hop=None, win=None):
 
     return X
 
+def tenFeatureSTFT(x):
+    """
+    Give stft analysis of data
+    ------------------------
+    Variables :
+    ------------------------
+    x   = the imput data, a np.array of amplitude data ranging from -1 to 1
+    ------------------------
+    Returns
+    X = a ten dimention FFT analysis
+    """
+    #print("This is the incomming data x:", x)
+    if N is None:#number of samples in each window
+        N = 2**11#2048
+    if hop is None: #this is the distance between FFT windows
+        hop = N//1.5#default is 1.5 we want it large b/c we are limited to 10 data points
+    if win is None:
+        win = 'hann'#should try a blockier window
+
+    window = get_window(win, N)
+    xLen = len(x)
+    #print("the shape of x : ",x)
+    X = np.empty((10, N), dtype=np.complex)#create an array to dump data into
+    #print("number of data points :", xLen)
+    for i in range(9):
+        chunk = window*x[i:i+N]
+        myFFT = fft(chunk)
+        X[i//hop,:] = myFFT
+
+    X = X[:,:N//2 +1]
+    X = X.transpose()
+
+    return X
+
 def myFFT(x):
     return fft(x)

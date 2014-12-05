@@ -2,7 +2,7 @@
 from scipy import *
 import numpy as np
 from rect import halfWave
-from stft import myFFT
+from stft import *
 
 def hfc(x):
     raise NotImplementedError()
@@ -18,10 +18,16 @@ def threeBandRMS(x):
     low = RMS(X[:len(X)//3])
     mid = RMS(X[len(X)//3:(len(X)//3)*2])
     high = RMS(X[(len(X)//3)*2:])
-    print("Low RMS : ", low)
-    print("Mid RMS : ", mid)
-    print("High RMS : ", high)
-    return low, mid, high
+    #one band vs energy of other two bands
+    LV = (mid + high)/2
+    MV = (low + high)/2
+    HV = (mid + low)/2
+    #one band vs energy of other specific band
+    LVM = low / mid
+    LVH = low / high
+    MVH =  mid / high
+    #return the nine features from three band RMS
+    return low, mid, high, LV, MV, HV, LVM, LVH, MVH
 
 def crestFactor(x):
     raise NotImplementedError()
@@ -64,7 +70,10 @@ def spectralFlux(x, hop=None):
     aver = flux[0]
     for i in range (hop, len(x) - hop, hop):
         flux[i:i+hop] = np.abs(flux[i] - flux[i+hop])
-    return flux
+    for i in range (len(flux)):
+       aver = aver + flux[i]
+
+    return (aver/(len(flux)))
 
 def complexNovelty(x):
     """
@@ -117,6 +126,8 @@ def envelope(x, binSize=None):
     return x
 
 def flatness(x):
+
+    """
     256, 128, 64, 32, 16, 8, 4, 2
     X1 = x[:128,:]
     X2 = x[128:256,:]
@@ -127,3 +138,4 @@ def flatness(x):
     arithMean = np.sum(np.abs(X1), axis=0)/K1
 
     flat1 = geoMean/arithMean#the flatness for the first bin
+    """
