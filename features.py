@@ -13,6 +13,7 @@ def RMS(x):
         total = x[i] + total
     return (total/len(x))**(0.5)
 
+#returns 9 RMS data points
 def threeBandRMS(x):
     X = myFFT(x)
     low = RMS(X[:len(X)//3])
