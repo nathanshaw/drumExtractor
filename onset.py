@@ -132,9 +132,10 @@ def localMax(x, srate=None):
 
     peaks = np.zeros(len(x))
     for i in range(1,len(x)-1):
+        #print("x[",i,"] Value is : ", x[i])
         cond1 = x[i] > x[i-1]
         cond2 = x[i] > x[i+1]
-        cond3 = x[i] > 0.46#tweak this for the threshold for quietest sample
+        cond3 = x[i] > 0.9995#tweak this for the threshold for quietest sample
         if (cond1 * cond2 * cond3 == True):
             peaks[i] = 1
     """

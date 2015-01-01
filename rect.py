@@ -1,11 +1,11 @@
 """
 rect.py
 --------------------------
-A group of rectifing functions to help other functions
+A group of rectifing functions for preprocessing
 --------------------------
 Author          : Nathan Villicana-Shaw
 Email           : nathanshaw@alum.calarts.edu
-Date            : October 13th, 2014
+Date            : December 9th,, 2014
 --------------------------
 CalArts : MTEC-480
 Fall 2014
@@ -32,14 +32,17 @@ def halfWave(x):
 
 def fullWave(x):
     """
+    -----------------------------"
     The function ensures all values are positive
-
+    -----------------------------"
     Variables:
+    -----------------------------"
         x  :  array of data
-
+    -----------------------------"
     Returns  :
+    -----------------------------"
         x  :  rectified array
-
+    -----------------------------"
     """
     for i in range(0,len(x)):
         if (x[i] <= 0):
@@ -59,10 +62,10 @@ def energy(x):
     ------------------------------
     """
     for i in range(0, len(x)):
-        x[i] = x[i]**2
+        x[i] = x[i]**(1/2)
     return x
 
-def internalClip(x, threshold = 0.16):
+def internalClip(x, threshold = None):
     """
     -----------------------
     An internal clipper function that only keeps the peaks of an incomming signal
@@ -76,14 +79,18 @@ def internalClip(x, threshold = 0.16):
     -----------------------
 
     """
+    if threshold=None:
+        threshold = 0.16
+
     x = smooth.normalize(x)
+
     for i in range(0, len(x)):
         if (x[i] < threshold):
             if(x[i] > -threshold):
                 x[i] = 0
     return x
 
-def binaryClip(x, threshold = 0.16):
+def binaryClip(x, threshold = None):
     """
     -----------------------
     An internal clipper function that only keeps the peaks of an incomming signal
@@ -98,6 +105,9 @@ def binaryClip(x, threshold = 0.16):
     -----------------------
 
     """
+    if threshold=None:
+        threshold = 0.16
+    #normalize the data
     x = smooth.normalize(x)
     for i in range(0, len(x)):
         if (x[i] < threshold):

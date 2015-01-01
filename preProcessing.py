@@ -1,23 +1,24 @@
 """
-smooth.py
---------------
-A group of functions for smoothing, filtering, averaging and otherwise treating
-incomming audio data
---------------
-Author    : Nathan Villicana-Shaw
-Email     : nathanshaw@alum.calarts.edu
-Date      : Oct 13, 2014
-
-CalArts   : MTEC-480
+preProcessing.py
+-------------------
+A group of preProcessing functions for DSP
+--------------------------
+Author          : Nathan Villicana-Shaw
+Email           : nathanshaw@alum.calarts.edu
+Date            : December 9th,, 2014
+--------------------------
+CalArts : MTEC-480
 Fall 2014
---------------
+--------------------------
 """
+
 import numpy as np
 from scipy.signal import lfilter, firwin, medfilt
 from pylab import figure, plot, grid, show
 
 def lpf(x, sens):
     """
+    --------------------
     Low Pass Filter Function
     --------------------
     Variables :
@@ -32,7 +33,8 @@ def lpf(x, sens):
     """
     for i in range(sens, len(x)):
         for s in range(1, sens):
-            x[i] = (x[i-s] + x[i])/2
+            x[i] = (x[i-s] + x[i])
+        x[i] = x[i]/sens
     return x
 
 def normalized(x):
@@ -97,7 +99,7 @@ def overSample(x):
     --------------------
     Returns :
     --------------------
-    X    :   The data filtered from x + sens to the last sample
+    X    :   the incomming array x but twice as long
     --------------------
     """
     X = np.zeros[len(x)*2]
@@ -105,14 +107,26 @@ def overSample(x):
         if (i % 2 == 0):
             X[i] = x[i/2]
         else :
-            X[i] = x[(i-1)/2]/2 + x[(i+1)/2]
+            X[i] = (x[(i-1)/2] + x[(i+1)/2])/2
     return X
 
-#not tested yet
-def underSample(x, ratio=2):
-    under = np.zeros(len(x)//ratio)
+def underSample(x):
+    """
+    -------------------
+    A undersampling function that takes all the even samples from the incomming array and returns them
+    -------------------
+    Variables :
+    -------------------
+    x : incomming array or list of data
+    -------------------
+    Returns   :
+    -------------------
+    X :  under sampled version of x
+    -------------------
+    """
+    under = np.zeros(len(x)//2)
     for i in range(len(under)-1):
-        under[i] = (x[i*ratio])
+        under[i] = (x[i*2])
     return under
 
 #this function needs some work
@@ -178,6 +192,7 @@ def fir(x, srate=None, cutoffFreq=None, numTaps=None):
 
 def removeDC(x):
     """
+    ------------------------
     Function for calculating an array of datas DC bias and
     then removing it from the signal
     ------------------------
@@ -218,31 +233,145 @@ def mean(x):
         total = total+x[i]
     mean = total/len(x)
     return mean
-"""
 
-----------
-These Functions need more work : :
----------
-
-def median(x, kernal = None):
-    if (kernal == None):
-        kernal = 5
-    return (medfilt(x, kernal))
-
-def weightedAverage(x, windowSize = 21):
-    if (windowSize % 2 == 0):
-        print("please enter in an odd number for window size next time")
-    halfHop = (windowSize - 1)//2
-    weight = 0
-    for i in windowSize:
-        weight = weight + i
-    for i in range(halfHop, len(x) - halfHop):
-        total = 0
-        average = 0
-        for i in range(-halfHop, halfHop):
-            total = total + x[i]
-        average = total/windowSize
-        x[i] = average
+def halfWave(x):
+    """
+    ---------------------------
+    The function throws away all negative values in the input
+    array
+    ---------------------------
+    Variables :
+    ---------------------------
+        x : array of data
+    ---------------------------
+    Returns :
+    ---------------------------
+        x : rectified array
+    ---------------------------
+    """
+    for i in range(0, len(x)):
+        if (x[i] <= 0):
+            x[i] = 0
     return x
-"""
 
+def fullWave(x):
+    """
+    -----------------------------
+    The function ensures all values are positive
+    -----------------------------
+    Variables:
+    -----------------------------
+        x  :  array of data
+    -----------------------------
+    Returns  :
+    -----------------------------
+        x  :  rectified array
+    -----------------------------
+    """
+    for i in range(0,len(x)):
+        if (x[i] <= 0):
+            x[i] = x[i]*-1
+    return x
+
+def energy(x):
+    """
+    ------------------------------
+    The function takes the 'power' of the input signal by squaring the values
+    ------------------------------
+    Variables:
+    ------------------------------
+        x  :  array of data
+    ------------------------------
+    Returns  :
+    ------------------------------
+        x  :  rectified array given as power
+    ------------------------------
+    """
+    for i in range(0, len(x)):
+        x[i] = x[i]**(1/2)
+    return x
+
+def internalClip(x, threshold = None):
+    """
+    -----------------------
+    An internal clipper function that only keeps the peaks of an incomming signal
+    -----------------------
+    Variables     :
+    -----------------------
+        x         :  incomming array of audio data
+        threshold :  the minumum threshold for a signal to pass through the function
+    -----------------------
+    Returns       :
+    -----------------------
+        x         :  the clipped data is returned
+    -----------------------
+
+    """
+    if threshold=None:
+        threshold = 0.16
+
+    x = smooth.normalize(x)
+
+    for i in range(0, len(x)):
+        if (x[i] < threshold):
+            if(x[i] > -threshold):
+                x[i] = 0
+    return x
+
+def binaryClip(x, threshold = None):
+    """
+    -----------------------
+    An internal clipper function that only keeps the peaks of an incomming signal
+    This clipper only returns -1,0 or 1. I call it a binary clipper
+    -----------------------
+    Variables     :
+    -----------------------
+        x         :  incomming array of audio data
+        threshold :  the minumum threshold for a signal to pass through the function
+    -----------------------
+    Returns       :
+    -----------------------
+        x         :  the clipped data is returned as 1's, -1's or 0's
+    -----------------------
+
+    """
+    if threshold=None:
+        threshold = 0.16
+    #normalize the data
+    x = smooth.normalize(x)
+    for i in range(0, len(x)):
+        if (x[i] < threshold):
+            if(x[i] > -threshold):
+                x[i] = 0
+        if (x[i] > 0):
+            x[i] = 1
+        if (x[i] < 0) :
+            x[i] = -1
+    return x
+
+
+ def envelope(x, binSize=None):
+     """
+     ---------------------
+     function for determining the overall amplitude envelope of a signal
+     ---------------------
+     Variables :
+     ----------------------
+     x         :  incoming array of audio data (or data in general
+     binSize   :  the amount of samples processed at a time
+     ----------------------
+     Returns :
+     ----------------------
+     x         :  an array containing the envelope data
+     ----------------------
+     """
+     if (binSize == None):
+         binSize = 2200
+     for i in range(0,len(x)-binSize,binSize):
+         maxi = 0.0
+         for j in range (i,i+binSize):
+             if (x[j] > maxi):
+                 maxi = x[j]
+         for i in range(i,i+binSize):
+             x[i] = maxi
+     return x
